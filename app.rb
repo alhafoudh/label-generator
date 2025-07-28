@@ -30,28 +30,39 @@ class App < Sinatra::Base
     height = (params[:height] || 32).to_f
     padding = (params[:padding] || 2.5).to_f
 
-    # Use fixed path with timestamp from ENV or default
-    timestamp = Time.now.strftime('%Y%m%d_%H%M%S')
-    base_path = ENV['LABEL_OUTPUT_PATH'] || './'
-    output_path = File.join(base_path, "label_#{timestamp}.pdf")
+    begin
+      # Use fixed path with timestamp from ENV or default
+      timestamp = Time.now.strftime('%Y%m%d_%H%M%S')
+      base_path = ENV['LABEL_OUTPUT_PATH'] || './'
+      output_path = File.join(base_path, "label_#{timestamp}.pdf")
 
-    # Generate the label
-    label = HtmlLabel.new(
-      qr_content:,
-      line1:,
-      line2:,
-      line3:,
-      width_mm: width,
-      height_mm: height,
-      padding_mm: padding
-    )
-    label.generate(output_path)
+      # Generate the label
+      label = HtmlLabel.new(
+        qr_content:,
+        line1:,
+        line2:,
+        line3:,
+        width_mm: width,
+        height_mm: height,
+        padding_mm: padding
+      )
+      label.generate(output_path)
 
-    # Send the PDF file
-    send_file output_path,
-      type: 'application/pdf',
-      filename: 'label.pdf',
-      disposition: 'inline'
+      # Send the PDF file
+      send_file output_path,
+        type: 'application/pdf',
+        filename: 'label.pdf',
+        disposition: 'inline'
+    rescue => e
+      logger.error "Error generating label: #{e.message}"
+      logger.error e.backtrace.join("\n")
+      
+      status 500
+      content_type :json
+      json({
+        error: e.message
+      })
+    end
   end
 
   run! if app_file == $0
