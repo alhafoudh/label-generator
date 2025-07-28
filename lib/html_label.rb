@@ -23,7 +23,10 @@ class HtmlLabel
     File.write('label.html', html_content)
 
     # Generate PDF from HTML using Ferrum
-    browser = Ferrum::Browser.new(headless: true)
+    browser = Ferrum::Browser.new(
+      process_timeout: ENV.fetch('FERRUM_PROCESS_TIMEOUT', 60).to_i,
+      headless: true,
+    )
     begin
       page = browser.create_page
       page.content = html_content
