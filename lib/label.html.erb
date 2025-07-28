@@ -17,9 +17,9 @@
       }
 
       .label {
-          width: 57mm;
-          height: 32mm;
-          padding: 2.5mm;
+          width: <%= width_mm %>mm;
+          height: <%= height_mm %>mm;
+          padding: <%= padding_mm %>mm;
           border: 1px solid black;
           display: flex;
           align-items: center;
@@ -66,7 +66,7 @@
 
       @media print {
           @page {
-              size: 57mm 32mm;
+              size: <%= width_mm %>mm <%= height_mm %>mm;
               margin: 0;
           }
 
@@ -77,8 +77,8 @@
 
           .label {
               border: none;
-              width: 57mm;
-              height: 32mm;
+              width: <%= width_mm %>mm;
+              height: <%= height_mm %>mm;
               page-break-inside: avoid;
               page-break-after: always;
           }

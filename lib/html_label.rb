@@ -4,13 +4,16 @@ require 'cgi'
 require 'ferrum'
 
 class HtmlLabel
-  attr_reader :qr_content, :line1, :line2, :line3
+  attr_reader :qr_content, :line1, :line2, :line3, :width_mm, :height_mm, :padding_mm
 
-  def initialize(qr_content:, line1:, line2:, line3:)
+  def initialize(qr_content:, line1:, line2:, line3:, width_mm: 57, height_mm: 32, padding_mm: 2.5)
     @qr_content = qr_content
     @line1 = line1
     @line2 = line2
     @line3 = line3
+    @width_mm = width_mm
+    @height_mm = height_mm
+    @padding_mm = padding_mm
   end
 
   def generate(output_path = 'label.pdf')

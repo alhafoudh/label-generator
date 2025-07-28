@@ -21,17 +21,16 @@ This is a Ruby CLI tool built with Thor that generates PDF labels using HexaPDF.
 
 ### Key Components
 - **label_generator.thor**: Main Thor CLI class containing the label generation logic
-- **Gemfile**: Dependencies including Thor, HexaPDF, Zeitwerk, and Pry
+- **Gemfile**: Dependencies including Thor, Ferrum, Zeitwerk, and Pry
 - **lib/**: Directory for additional Ruby modules (currently empty, loaded via Zeitwerk)
 
 ### Label Generation Process
-1. Creates a new HexaPDF document
+1. Creates a new HTML document
 2. Adds a page with specific dimensions (57x32mm)
-3. Renders text using Helvetica Bold at 5mm size
+3. Renders PDF using ferrum
 4. Outputs to `label.pdf`
 
 ### Technical Details
 - Uses Zeitwerk for auto-loading from lib/ directory
 - PDF dimensions are converted from millimeters to points (72 DPI)
 - Label size is fixed at 57x32mm (typical address label size)
-- Always consult https://hexapdf.gettalong.org/documentation/getting-started/index.html for HexaPDF documentation
