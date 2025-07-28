@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Label</title>
+  <style>
+      * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+      }
+
+      body {
+          margin: 0;
+          padding: 10mm;
+          font-family: Helvetica, Arial, sans-serif;
+      }
+
+      .label {
+          width: 57mm;
+          height: 32mm;
+          padding: 2.5mm;
+          border: 1px solid black;
+          display: flex;
+          align-items: center;
+          position: relative;
+      }
+
+      .qr-container {
+          width: 40%;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+      }
+
+      .qr-code {
+          max-width: 100%;
+          max-height: 100%;
+          width: auto;
+          height: auto;
+      }
+
+      .text-container {
+          width: 60%;
+          height: 100%;
+          padding-left: 2mm;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          overflow: hidden;
+      }
+
+      .text-line {
+          font-size: 3.5mm;
+          line-height: 1.2;
+          overflow-wrap: break-word;
+          flex: 1;
+          display: flex;
+          align-items: flex-start;
+      }
+
+      .text-line:first-child {
+          font-weight: bold;
+      }
+
+      @media print {
+          @page {
+              size: 57mm 32mm;
+              margin: 0;
+          }
+
+          body {
+              margin: 0;
+              padding: 0;
+          }
+
+          .label {
+              border: none;
+              width: 57mm;
+              height: 32mm;
+              page-break-inside: avoid;
+              page-break-after: always;
+          }
+      }
+  </style>
+</head>
+<body>
+<div class="label">
+  <div class="qr-container">
+    <%= qr_svg %>
+  </div>
+  <div class="text-container">
+    <div class="text-line"><%= h(line1) %></div>
+    <div class="text-line"><%= h(line2) %></div>
+    <div class="text-line"><%= h(line3) %></div>
+  </div>
+</div>
+</body>
+</html>
