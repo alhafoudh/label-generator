@@ -26,6 +26,7 @@ class HtmlLabel
     browser = Ferrum::Browser.new(
       process_timeout: ENV.fetch('FERRUM_PROCESS_TIMEOUT', 60).to_i,
       headless: true,
+      browser_options: { "no-sandbox": nil },
     )
     begin
       page = browser.create_page
