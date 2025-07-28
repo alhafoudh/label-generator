@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bundle exec thor label_generator:generate:*)"
+    ],
+    "deny": []
+  }
+}
