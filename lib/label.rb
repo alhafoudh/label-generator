@@ -19,14 +19,14 @@ class Label
     page = doc.pages.add
     page.box(:media, [0, 0, width, height])
 
-    draw_content(page.canvas)
+    draw_content(page.canvas, doc)
 
     doc.write(output_path)
   end
 
   private
 
-  def draw_content(canvas)
+  def draw_content(canvas, doc)
     # Draw rectangle border
     border_width = width - x_margin * 2
     border_height = height - y_margin * 2
@@ -47,7 +47,7 @@ class Label
     # Draw text lines
     text_x = content_x + qr_size + mm_to_p(2)
     text_width = content_width - qr_size - mm_to_p(2)
-    line_area_height = content_height / 3.0
+    draw_text_lines(canvas, doc, text_x, content_y, text_width, content_height)
   end
 
   def draw_qr_code(canvas, x, y, size)
@@ -70,6 +70,36 @@ class Label
         end
       end
     end
+  end
+
+  def draw_text_lines(canvas, doc, x, y, width, height)
+    # Font sizes
+    line_font_size = mm_to_p(3.5)
+    
+    # Calculate line spacing
+    line_spacing = height / 3.0
+    
+    # Setup fonts
+    regular_font = doc.fonts.add('Helvetica')
+    bold_font = doc.fonts.add('Helvetica', variant: :bold)
+    
+    # Create text layouter
+    layouter = HexaPDF::Layout::TextLayouter.new
+    
+    # Draw line 1 (bold)
+    fragments = [HexaPDF::Layout::TextFragment.create(line1, font: bold_font, font_size: line_font_size)]
+    result = layouter.fit(fragments, width, line_spacing)
+    result.draw(canvas, x, y + height - line_spacing)
+    
+    # Draw line 2 (regular)
+    fragments = [HexaPDF::Layout::TextFragment.create(line2, font: regular_font, font_size: line_font_size)]
+    result = layouter.fit(fragments, width, line_spacing)
+    result.draw(canvas, x, y + line_spacing)
+    
+    # Draw line 3 (regular) 
+    fragments = [HexaPDF::Layout::TextFragment.create(line3, font: regular_font, font_size: line_font_size)]
+    result = layouter.fit(fragments, width, line_spacing)
+    result.draw(canvas, x, y)
   end
 
   def mm_to_p(value)
