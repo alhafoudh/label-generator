@@ -45,3 +45,34 @@ This is a Ruby CLI tool built with Thor that generates PDF labels with QR codes 
 The updated command syntax requires 4 arguments:
 - `bundle exec thor label_generator:generate "QR_CONTENT" "LINE1" "LINE2" "LINE3"`
 - Optional flags: `--width=57 --height=32 --padding=2.5` (in millimeters)
+
+## Sinatra Web API
+
+A web API is available through `app.rb` that exposes the label generation functionality:
+
+### Running the API
+- `bundle exec ruby app.rb` - Start the Sinatra server on http://localhost:4567
+
+### API Endpoint
+- **GET /generate** - Generate a PDF label via HTTP request
+
+### Required Parameters
+- `qr_content` - Content to encode in the QR code
+- `line1` - First line of text
+- `line2` - Second line of text  
+- `line3` - Third line of text
+
+### Optional Parameters
+- `width` - Label width in mm (default: 57)
+- `height` - Label height in mm (default: 32)
+- `padding` - Label padding in mm (default: 2.5)
+
+### Environment Variables
+- `LABEL_OUTPUT_PATH` - Directory path for generated PDF files (default: current directory)
+
+### Example Usage
+```bash
+curl "http://localhost:4567/generate?qr_content=SKU12345&line1=Product%20Name&line2=Model%20XYZ-123&line3=Serial%3A%20ABC123"
+```
+
+The API returns the generated PDF file directly with timestamped filename format: `label_YYYYMMDD_HHMMSS.pdf`

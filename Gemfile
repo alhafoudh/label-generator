@@ -8,3 +8,8 @@ gem "thor", "~> 1.3"
 
 gem "rqrcode", "~> 3.1"
 gem "ferrum", "~> 0.17.1"
+
+gem "sinatra", "~> 4.0"
+gem "puma", "~> 6.6"
+
+gem "sinatra-contrib", "~> 4.1"
