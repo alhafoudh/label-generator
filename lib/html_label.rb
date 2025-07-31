@@ -16,13 +16,13 @@ class HtmlLabel
     @padding_mm = padding_mm
   end
 
-  def generate(output_path = 'label.pdf')
+  def generate(output_path = 'label.pdf', format: :pdf)
     html_content = generate_html
 
     # Save HTML for debugging
     File.write('label.html', html_content)
 
-    # Generate PDF from HTML using Ferrum
+    # Generate PDF or PNG from HTML using Ferrum
     browser = Ferrum::Browser.new(
       process_timeout: ENV.fetch('FERRUM_PROCESS_TIMEOUT', 60).to_i,
       headless: true,
@@ -31,14 +31,22 @@ class HtmlLabel
     begin
       page = browser.create_page
       page.content = html_content
-      page.pdf(
-        path: output_path,
-        format: :A4,
-        landscape: false,
-        margin: { top: 0, right: 0, bottom: 0, left: 0 },
-        preferCSSPageSize: true,
-        printBackground: true
-      )
+
+      if format.to_sym == :png
+        # Set viewport size and take screenshot for PNG format
+        page.set_viewport(width: @width_mm.to_i, height: @height_mm.to_i)
+        page.screenshot(path: output_path, full: true)
+      else
+        # Generate PDF (default)
+        page.pdf(
+          path: output_path,
+          format: :A4,
+          landscape: false,
+          margin: { top: 0, right: 0, bottom: 0, left: 0 },
+          preferCSSPageSize: true,
+          printBackground: true
+        )
+      end
     ensure
       browser.quit
     end

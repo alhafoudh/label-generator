@@ -14,11 +14,8 @@ class App < Sinatra::Base
 
     if missing_params.any?
       status 400
-      content_type :json
-      json({
-        error: "Missing required parameters: #{missing_params.join(', ')}"
-      })
-      return
+      content_type 'application/json'
+      return { error: "Missing required parameters: #{missing_params.join(', ')}" }.to_json
     end
 
     # Extract parameters with defaults
@@ -29,12 +26,14 @@ class App < Sinatra::Base
     width = (params[:width] || 57).to_f
     height = (params[:height] || 32).to_f
     padding = (params[:padding] || 2.5).to_f
+    format = (params[:format] || 'pdf').downcase
 
     begin
       # Use fixed path with timestamp from ENV or default
       timestamp = Time.now.strftime('%Y%m%d_%H%M%S')
       base_path = ENV['LABEL_OUTPUT_PATH'] || './'
-      output_path = File.join(base_path, "label_#{timestamp}.pdf")
+      file_extension = format == 'png' ? '.png' : '.pdf'
+      output_path = File.join(base_path, "label_#{timestamp}#{file_extension}")
 
       # Generate the label
       label = HtmlLabel.new(
@@ -46,22 +45,25 @@ class App < Sinatra::Base
         height_mm: height,
         padding_mm: padding
       )
-      label.generate(output_path)
+      label.generate(output_path, format: format.to_sym)
 
-      # Send the PDF file
-      send_file output_path,
-        type: 'application/pdf',
-        filename: 'label.pdf',
-        disposition: 'inline'
+      # Send the file with appropriate content type
+      content_type = format == 'png' ? 'image/png' : 'application/pdf'
+      filename = format == 'png' ? 'label.png' : 'label.pdf'
+
+      send_file(
+        output_path,
+        type: content_type,
+        filename: filename,
+        disposition: 'inline',
+      )
     rescue => e
       logger.error "Error generating label: #{e.message}"
       logger.error e.backtrace.join("\n")
-      
+
       status 500
-      content_type :json
-      json({
-        error: e.message
-      })
+      content_type 'application/json'
+      { error: e.message }.to_json
     end
   end
 
