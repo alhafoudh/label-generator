@@ -72,7 +72,8 @@ class HtmlLabel
       standalone: true,
       use_path: true,
       viewbox: true,
-      svg_attributes: { class: 'qr-code' }
+      svg_attributes: { class: 'qr-code' },
+      level: ENV.fetch('QR_LEVEL', 'm').to_sym,
     )
   end
 
