@@ -64,7 +64,10 @@ class HtmlLabel
   end
 
   def qr_svg(content)
-    qrcode = RQRCode::QRCode.new(content)
+    qrcode = RQRCode::QRCode.new(
+      content,
+      level: ENV.fetch('QR_LEVEL', 'm').to_sym,
+    )
     qrcode.as_svg(
       color: '000',
       shape_rendering: 'crispEdges',
@@ -73,7 +76,6 @@ class HtmlLabel
       use_path: true,
       viewbox: true,
       svg_attributes: { class: 'qr-code' },
-      level: ENV.fetch('QR_LEVEL', 'm').to_sym,
     )
   end
 
