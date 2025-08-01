@@ -9,23 +9,7 @@ loader.setup
 
 class App < Sinatra::Base
   get '/generate' do
-    required_params = %i[qr_content line1 line2 line3]
-    missing_params = required_params.reject { |p| params[p] }
-
-    if missing_params.any?
-      status 400
-      content_type 'application/json'
-      return { error: "Missing required parameters: #{missing_params.join(', ')}" }.to_json
-    end
-
-    # Extract parameters with defaults
-    qr_content = params[:qr_content]
-    line1 = params[:line1]
-    line2 = params[:line2]
-    line3 = params[:line3]
-    width = (params[:width] || 57).to_f
-    height = (params[:height] || 32).to_f
-    padding = (params[:padding] || 2.5).to_f
+    # Extract format parameter
     format = (params[:format] || 'pdf').downcase
 
     begin
@@ -36,15 +20,7 @@ class App < Sinatra::Base
       output_path = File.join(base_path, "label_#{timestamp}#{file_extension}")
 
       # Generate the label
-      label = HtmlLabel.new(
-        qr_content:,
-        line1:,
-        line2:,
-        line3:,
-        width_mm: width,
-        height_mm: height,
-        padding_mm: padding
-      )
+      label = HtmlLabel.new(params)
       label.generate(output_path, format: format.to_sym)
 
       # Send the file with appropriate content type

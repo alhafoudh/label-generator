@@ -4,16 +4,10 @@ require 'cgi'
 require 'ferrum'
 
 class HtmlLabel
-  attr_reader :qr_content, :line1, :line2, :line3, :width_mm, :height_mm, :padding_mm
+  attr_reader :params
 
-  def initialize(qr_content:, line1:, line2:, line3:, width_mm: 57, height_mm: 32, padding_mm: 2.5)
-    @qr_content = qr_content
-    @line1 = line1
-    @line2 = line2
-    @line3 = line3
-    @width_mm = width_mm
-    @height_mm = height_mm
-    @padding_mm = padding_mm
+  def initialize(params = {})
+    @params = params.transform_keys(&:to_sym)
   end
 
   def generate(output_path = 'label.pdf', format: :pdf)
@@ -34,7 +28,9 @@ class HtmlLabel
 
       if format.to_sym == :png
         # Set viewport size and take screenshot for PNG format
-        page.set_viewport(width: @width_mm.to_i, height: @height_mm.to_i)
+        width = params.fetch(:width, 57).to_i
+        height = params.fetch(:height, 32).to_i
+        page.set_viewport(width:, height:)
         page.screenshot(path: output_path, full: true)
       else
         # Generate PDF (default)
@@ -60,8 +56,8 @@ class HtmlLabel
     template.result(binding)
   end
 
-  def qr_svg
-    qrcode = RQRCode::QRCode.new(qr_content)
+  def qr_svg(content)
+    qrcode = RQRCode::QRCode.new(content)
     qrcode.as_svg(
       color: '000',
       shape_rendering: 'crispEdges',

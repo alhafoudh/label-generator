@@ -17,9 +17,9 @@
       }
 
       .label {
-          width: <%= width_mm %>mm;
-          height: <%= height_mm %>mm;
-          padding: <%= padding_mm %>mm;
+          width: <%= params[:Width] || 57 %>mm;
+          height: <%= params[:Height] || 32 %>mm;
+          padding: <%= params[:Margin] || 2.5 %>mm;
           border: 1px solid black;
           display: flex;
           align-items: center;
@@ -65,14 +65,14 @@
       }
 
       @page {
-          size: <%= width_mm %>mm <%= height_mm %>mm;
+          size: <%= params[:Width] || 57 %>mm <%= params[:Height] || 32 %>mm;
           margin: 0;
       }
 
       .label {
           border: none;
-          width: <%= width_mm %>mm;
-          height: <%= height_mm %>mm;
+          width: <%= params[:Width] || 57 %>mm;
+          height: <%= params[:Height]|| 32 %>mm;
           page-break-inside: avoid;
           page-break-after: always;
       }
@@ -81,12 +81,11 @@
 <body>
 <div class="label">
   <div class="qr-container">
-    <%= qr_svg %>
+    <%= qr_svg(params[:URL] || '') %>
   </div>
   <div class="text-container">
-    <div class="text-line"><%= h(line1) %></div>
-    <div class="text-line"><%= h(line2) %></div>
-    <div class="text-line"><%= h(line3) %></div>
+    <div class="text-line"><%= h(params[:TitleText] || '') %></div>
+    <div class="text-line"><%= h(params[:DescriptionText] || '') %></div>
   </div>
 </div>
 </body>
