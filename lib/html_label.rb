@@ -15,7 +15,10 @@ class HtmlLabel
     html_content = generate_html
 
     # Save HTML for debugging
-    File.write('label.html', html_content)
+    dir = File.dirname(output_path)
+    basename = File.basename(output_path, File.extname(output_path))
+    html_path = File.join(dir, "#{basename}.html")
+    File.write(html_path, html_content)
 
     # Generate PDF or PNG from HTML using Ferrum
     browser = Ferrum::Browser.new(
