@@ -52,8 +52,14 @@ class HtmlLabel
   private
 
   def generate_html
-    template_path = File.expand_path('./label.html.erb', __dir__)
-    template = ERB.new(File.read(template_path))
+    if params[:template]
+      # Use custom template from params
+      template = ERB.new(params[:template])
+    else
+      # Use default template file
+      template_path = File.expand_path('./label.html.erb', __dir__)
+      template = ERB.new(File.read(template_path))
+    end
     template.result(binding)
   end
 
