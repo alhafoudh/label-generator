@@ -1,8 +1,8 @@
 <%
   before_generate do |page|
     page.set_viewport(
-      width: params[:Width] || 57,
-      height: params[:Height] || 32,
+      width: params.fetch(:Width, 57).to_i,
+      height: params.fetch(:Height, 32).to_i,
     )
   end
 %>
