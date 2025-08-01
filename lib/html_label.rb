@@ -5,6 +5,7 @@ require 'ferrum'
 
 class HtmlLabel
   attr_reader :params
+  attr_reader :before_generate_block
 
   def initialize(params = {})
     @params = params.transform_keys(&:to_sym)
@@ -25,12 +26,9 @@ class HtmlLabel
     begin
       page = browser.create_page
       page.content = html_content
+      before_generate_block.call(page) if before_generate_block
 
       if format.to_sym == :png
-        # Set viewport size and take screenshot for PNG format
-        width = params.fetch(:width, 57).to_i
-        height = params.fetch(:height, 32).to_i
-        page.set_viewport(width:, height:)
         page.screenshot(path: output_path, full: true)
       else
         # Generate PDF (default)
@@ -67,6 +65,10 @@ class HtmlLabel
       viewbox: true,
       svg_attributes: { class: 'qr-code' }
     )
+  end
+
+  def before_generate(&block)
+    @before_generate_block = block
   end
 
   def h(text)
