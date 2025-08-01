@@ -8,6 +8,10 @@ loader.push_dir(File.expand_path('./lib', __dir__))
 loader.setup
 
 class App < Sinatra::Base
+  configure do
+    set :logging, Logger::INFO
+  end
+
   get '/generate' do
     # Extract format parameter
     format = (params[:format] || 'pdf').downcase
