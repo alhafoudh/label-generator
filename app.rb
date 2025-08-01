@@ -12,8 +12,8 @@ class App < Sinatra::Base
     set :logging, Logger::INFO
   end
 
-  get '/generate' do
-    # Extract format parameter
+  get '/generate.:format?' do
+    # Extract format from URL extension, default to pdf
     format = (params[:format] || 'pdf').downcase
 
     begin
