@@ -14,11 +14,11 @@ class HtmlLabel
   def generate(output_path = 'label.pdf', format: :pdf)
     html_content = generate_html
 
-    # Save HTML for debugging
-    dir = File.dirname(output_path)
-    basename = File.basename(output_path, File.extname(output_path))
-    html_path = File.join(dir, "#{basename}.html")
-    File.write(html_path, html_content)
+    # If format is HTML, just write the HTML and return
+    if format.to_sym == :html
+      File.write(output_path, html_content)
+      return html_content
+    end
 
     # Generate PDF or PNG from HTML using Ferrum
     browser = Ferrum::Browser.new(
@@ -76,5 +76,9 @@ class HtmlLabel
 
   def h(text)
     CGI.escapeHTML(text)
+  end
+
+  def nl2br(text)
+    text.to_s.gsub(/\n/, '<br />')
   end
 end

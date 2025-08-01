@@ -2,6 +2,7 @@ require 'bundler'
 Bundler.require
 
 require 'sinatra/base'
+require 'sinatra/reloader'
 
 loader = Zeitwerk::Loader.new
 loader.push_dir(File.expand_path('./lib', __dir__))
@@ -12,6 +13,10 @@ class App < Sinatra::Base
     set :logging, Logger::INFO
   end
 
+  configure :development do
+    register Sinatra::Reloader
+  end
+
   get '/generate.:format?' do
     # Extract format from URL extension, default to pdf
     format = (params[:format] || 'pdf').downcase
@@ -20,23 +25,29 @@ class App < Sinatra::Base
       # Use fixed path with timestamp from ENV or default
       timestamp = Time.now.strftime('%Y%m%d_%H%M%S')
       base_path = ENV['LABEL_OUTPUT_PATH'] || './'
-      file_extension = format == 'png' ? '.png' : '.pdf'
+
+      # Determine file extension and output path
+      file_extension = case format
+      when 'png' then '.png'
+      when 'pdf' then '.pdf'
+      else '.html'
+      end
       output_path = File.join(base_path, "label_#{timestamp}#{file_extension}")
 
       # Generate the label
       label = HtmlLabel.new(params)
-      label.generate(output_path, format: format.to_sym)
+      result = label.generate(output_path, format: format.to_sym)
 
-      # Send the file with appropriate content type
-      content_type = format == 'png' ? 'image/png' : 'application/pdf'
-      filename = format == 'png' ? 'label.png' : 'label.pdf'
-
-      send_file(
-        output_path,
-        type: content_type,
-        filename: filename,
-        disposition: 'inline',
-      )
+      # Handle response based on format
+      case format
+      when 'html'
+        content_type 'text/html'
+        result
+      when 'png'
+        send_file(output_path, type: 'image/png', filename: 'label.png', disposition: 'inline')
+      else
+        send_file(output_path, type: 'application/pdf', filename: 'label.pdf', disposition: 'inline')
+      end
     rescue => e
       logger.error "Error generating label: #{e.message}"
       logger.error e.backtrace.join("\n")

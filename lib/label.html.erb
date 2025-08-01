@@ -16,12 +16,19 @@
           margin: 0;
           padding: 0;
           box-sizing: border-box;
+          -webkit-font-smoothing: none;
+          -moz-osx-font-smoothing: grayscale;
+          font-smooth: never;
+          text-rendering: optimizeSpeed;
       }
 
       body {
           margin: 0;
           padding: 0;
           font-family: Helvetica, Arial, sans-serif;
+          image-rendering: -webkit-optimize-contrast;
+          image-rendering: -moz-crisp-edges;
+          image-rendering: pixelated;
       }
 
       .label {
@@ -47,6 +54,9 @@
           max-height: 100%;
           width: auto;
           height: auto;
+          image-rendering: -webkit-optimize-contrast;
+          image-rendering: -moz-crisp-edges;
+          image-rendering: pixelated;
       }
 
       .text-container {
@@ -55,7 +65,7 @@
           padding-left: 2mm;
           display: flex;
           flex-direction: column;
-          justify-content: space-between;
+          justify-content: start;
           overflow: hidden;
       }
 
@@ -63,7 +73,6 @@
           font-size: 3.5mm;
           line-height: 1.2;
           overflow-wrap: break-word;
-          flex: 1;
           display: flex;
           align-items: flex-start;
       }
@@ -92,8 +101,8 @@
     <%= qr_svg(params[:URL] || '') %>
   </div>
   <div class="text-container">
-    <div class="text-line"><%= h(params[:TitleText] || '') %></div>
-    <div class="text-line"><%= h(params[:DescriptionText] || '') %></div>
+    <div class="text-line"><%= nl2br(h(params[:TitleText] || '')) %></div>
+    <div class="text-line"><%= nl2br(h(params[:DescriptionText] || '')) %></div>
   </div>
 </div>
 </body>

@@ -11,7 +11,7 @@ class LabelGenerator < Thor
   include Thor::Actions
 
   desc 'generate JSON_PARAMS', 'Generate a label from JSON parameters'
-  option :format, type: :string, default: 'pdf', desc: 'Output format (pdf or png)'
+  option :format, type: :string, default: 'pdf', desc: 'Output format (pdf, png, or html)'
 
   def generate(json_params)
     begin
@@ -22,10 +22,18 @@ class LabelGenerator < Thor
     end
     
     format = options[:format].downcase
-    file_extension = format == 'png' ? '.png' : '.pdf'
+    file_extension = case format
+                    when 'png' then '.png'
+                    when 'html' then '.html'
+                    else '.pdf'
+                    end
     output_path = "label#{file_extension}"
     
     label = HtmlLabel.new(params)
-    label.generate(output_path, format: format.to_sym)
+    result = label.generate(output_path, format: format.to_sym)
+    
+    if format == 'html'
+      puts result
+    end
   end
 end
