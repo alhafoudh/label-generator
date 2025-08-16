@@ -19,6 +19,10 @@ class App < Sinatra::Base
 
   [:get, :post].map do |method|
     send(method, '/generate.:format?') do
+      if method == :post
+        params.merge!(JSON.parse(request.body.read))
+      end
+
       # Extract format from URL extension, default to pdf
       format = (params[:format] || 'pdf').downcase
 
