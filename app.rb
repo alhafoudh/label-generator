@@ -18,7 +18,7 @@ class App < Sinatra::Base
   end
 
   [:get, :post].map do |method|
-    pubcli_send(method, '/generate.:format?') do
+    send(method, '/generate.:format?') do
       # Extract format from URL extension, default to pdf
       format = (params[:format] || 'pdf').downcase
 
