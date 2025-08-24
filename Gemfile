@@ -15,3 +15,4 @@ gem "sinatra", "~> 4.0"
 gem "sinatra-contrib", "~> 4.1"
 
 gem "puma", "~> 6.6"
+gem "childprocess", "~> 5.0"
